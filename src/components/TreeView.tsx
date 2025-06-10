@@ -238,6 +238,10 @@ export const TreeView: React.FC<TreeViewProps> = ({ model }) => {
 };
 
 const PointDetails: React.FC<{ point: Point }> = ({ point }) => {
+  const getDisplayType = (type: string) => {
+    return type === 'sunssf' ? 'Scale Factor' : type;
+  };
+
   return (
     <div className="mt-1 space-y-1">
       <div className="flex flex-wrap gap-2 text-xs">
@@ -246,9 +250,10 @@ const PointDetails: React.FC<{ point: Point }> = ({ point }) => {
           point.type === 'int16' ? 'bg-indigo-100 text-indigo-700' :
           point.type === 'string' ? 'bg-purple-100 text-purple-700' :
           point.type === 'enum16' ? 'bg-amber-100 text-amber-700' :
+          point.type === 'sunssf' ? 'bg-teal-100 text-teal-700' :
           'bg-slate-100 text-slate-700'
         }`}>
-          {point.type}
+          {getDisplayType(point.type)}
         </span>
         
         {point.access && (
