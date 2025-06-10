@@ -37,6 +37,13 @@ export class GitHubService {
         try {
           const modelData = await this.getModel(file.name);
           const info = this.extractModelInfo(file.name, modelData);
+          
+          // Skip invalid models (ID 0 or negative)
+          if (info.id <= 0) {
+            console.warn(`Skipping invalid model with ID ${info.id}: ${file.name}`);
+            return null;
+          }
+          
           return {
             ...info,
             filename: file.name
@@ -77,7 +84,17 @@ export class GitHubService {
   static extractModelInfo(filename: string, modelData: any): { id: number; name: string; label?: string; desc?: string } {
     // Extract model ID from filename (e.g., "model_1.json" -> 1)
     const idMatch = filename.match(/model_(\d+)\.json/);
-    const id = idMatch ? parseInt(idMatch[1]) : modelData.id || 0;
+    let id = 0;
+    
+    if (idMatch) {
+      id = parseInt(idMatch[1]);
+    } else if (modelData.id && typeof modelData.id === 'number' && modelData.id > 0) {
+      id = modelData.id;
+    } else {
+      // Try to extract from model data if filename parsing fails
+      console.warn(`Could not extract valid model ID from ${filename}`);
+      return { id: 0, name: filename.replace('.json', '') };
+    }
     
     return {
       id,
