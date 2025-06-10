@@ -42,17 +42,19 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <FileText className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-slate-800">SunSpec Model Viewer</h1>
+        {/* Header - only show on model list page */}
+        {!model && (
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <FileText className="w-8 h-8 text-blue-600" />
+              <h1 className="text-3xl font-bold text-slate-800">SunSpec Model Viewer</h1>
+            </div>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Browse and visualize SunSpec information model definitions from the official GitHub repository. Explore the hierarchical structure 
+              with detailed point information and interactive tree navigation.
+            </p>
           </div>
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Browse and visualize SunSpec information model definitions from the official GitHub repository. Explore the hierarchical structure 
-            with detailed point information and interactive tree navigation.
-          </p>
-        </div>
+        )}
 
         {!model ? (
           /* Model Selection */
