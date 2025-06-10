@@ -8,7 +8,7 @@ interface TreeViewProps {
 
 export const TreeView: React.FC<TreeViewProps> = ({ model }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set(['root']));
+  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
 
   const buildTree = useMemo(() => {
     const createTreeNode = (
