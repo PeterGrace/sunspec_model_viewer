@@ -245,6 +245,18 @@ export const TreeView: React.FC<TreeViewProps> = ({ model }) => {
                 <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">Units</span>
                 <span className="text-slate-600 text-sm">Unit of measurement</span>
               </div>
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm font-medium">Bitfield</span>
+                <span className="text-slate-600 text-sm">Bit field with individual bit meanings</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">Enum</span>
+                <span className="text-slate-600 text-sm">Enumerated values with specific meanings</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">X values</span>
+                <span className="text-slate-600 text-sm">Number of possible enum/bitfield values</span>
+              </div>
             </div>
           </div>
 
@@ -317,6 +329,34 @@ const PointDetails: React.FC<{ point: Point }> = ({ point }) => {
     return type === 'sunssf' ? 'Scale Factor' : type;
   };
 
+  const isEnumOrBitfield = point.type === 'enum16' || point.type === 'bitfield16' || point.type === 'bitfield32';
+
+  const renderSymbols = () => {
+    if (!point.symbols || point.symbols.length === 0) return null;
+
+    return (
+      <div className="mt-2 p-2 bg-slate-50 rounded border">
+        <h4 className="text-xs font-medium text-slate-700 mb-1">
+          {point.type.includes('bitfield') ? 'Bit Values:' : 'Enum Values:'}
+        </h4>
+        <div className="space-y-1 max-h-32 overflow-y-auto">
+          {point.symbols.map((symbol, index) => (
+            <div key={index} className="flex items-start justify-between text-xs">
+              <div className="flex-1 min-w-0">
+                <span className="font-mono text-slate-800">{symbol.name}</span>
+                {symbol.label && (
+                  <span className="ml-2 text-slate-600">({symbol.label})</span>
+                )}
+              </div>
+              <span className="ml-2 px-1.5 py-0.5 bg-slate-200 text-slate-700 rounded text-xs font-mono flex-shrink-0">
+                {symbol.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="mt-1 space-y-1">
       <div className="flex flex-wrap gap-2 text-xs">
@@ -325,6 +365,8 @@ const PointDetails: React.FC<{ point: Point }> = ({ point }) => {
           point.type === 'int16' ? 'bg-indigo-100 text-indigo-700' :
           point.type === 'string' ? 'bg-purple-100 text-purple-700' :
           point.type === 'enum16' ? 'bg-amber-100 text-amber-700' :
+          point.type === 'bitfield16' ? 'bg-pink-100 text-pink-700' :
+          point.type === 'bitfield32' ? 'bg-pink-100 text-pink-700' :
           point.type === 'sunssf' ? 'bg-teal-100 text-teal-700' :
           'bg-slate-100 text-slate-700'
         }`}>
@@ -352,11 +394,19 @@ const PointDetails: React.FC<{ point: Point }> = ({ point }) => {
             {point.units}
           </span>
         )}
+
+        {isEnumOrBitfield && point.symbols && point.symbols.length > 0 && (
+          <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">
+            {point.symbols.length} values
+          </span>
+        )}
       </div>
       
       {point.desc && (
         <p className="text-xs text-slate-600 leading-relaxed">{point.desc}</p>
       )}
+
+      {isEnumOrBitfield && renderSymbols()}
     </div>
   );
 };
