@@ -180,58 +180,133 @@ export const TreeView: React.FC<TreeViewProps> = ({ model }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="p-4 border-b border-slate-200 bg-slate-50">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-800">Model Structure</h2>
-          <div className="flex items-center space-x-2 text-sm text-slate-600">
-            <Info className="w-4 h-4" />
-            <span>Model ID: {model.id}</span>
+    <div className="grid grid-cols-2 gap-6 h-[calc(100vh-12rem)]">
+      {/* Left Side - Tree Structure */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+        <div className="p-4 border-b border-slate-200 bg-slate-50 flex-shrink-0">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-slate-800">Model Structure</h2>
+            <div className="flex items-center space-x-2 text-sm text-slate-600">
+              <Info className="w-4 h-4" />
+              <span>Model ID: {model.id}</span>
+            </div>
           </div>
-        </div>
-        
-        {/* Legend */}
-        <div className="mb-4 p-3 bg-white rounded-lg border border-slate-200">
-          <h3 className="text-sm font-medium text-slate-700 mb-2">Point Attributes Legend</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
-            <div className="flex items-center space-x-2">
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Type</span>
-              <span className="text-slate-600">Data type</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full">Access</span>
-              <span className="text-slate-600">Read/Write permissions</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full">Required</span>
-              <span className="text-slate-600">Mandatory/Optional</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full">Units</span>
-              <span className="text-slate-600">Unit of measure</span>
-            </div>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search points, groups, or descriptions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            />
           </div>
         </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search points, groups, or descriptions..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-          />
+        <div className="flex-1 overflow-y-auto p-4">
+          {filteredTree ? renderNode(filteredTree) : (
+            <div className="text-center py-8 text-slate-500">
+              <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <p>No results found for "{searchTerm}"</p>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="max-h-96 overflow-y-auto p-4">
-        {filteredTree ? renderNode(filteredTree) : (
-          <div className="text-center py-8 text-slate-500">
-            <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p>No results found for "{searchTerm}"</p>
+      {/* Right Side - Legend and Information */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+        <div className="p-4 border-b border-slate-200 bg-slate-50 flex-shrink-0">
+          <h2 className="text-lg font-semibold text-slate-800">Legend & Information</h2>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {/* Point Attributes Legend */}
+          <div>
+            <h3 className="text-sm font-medium text-slate-700 mb-3">Point Attributes</h3>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">Type</span>
+                <span className="text-slate-600 text-sm">Data type (uint16, int16, string, etc.)</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-medium">Scale Factor</span>
+                <span className="text-slate-600 text-sm">Scaling factor for numeric values</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Access</span>
+                <span className="text-slate-600 text-sm">Read/Write permissions (R, RW)</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">Required</span>
+                <span className="text-slate-600 text-sm">Mandatory (M) or Optional (O)</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">Units</span>
+                <span className="text-slate-600 text-sm">Unit of measurement</span>
+              </div>
+            </div>
           </div>
-        )}
+
+          {/* Icons Legend */}
+          <div>
+            <h3 className="text-sm font-medium text-slate-700 mb-3">Icons</h3>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <Database className="w-5 h-5 text-blue-600" />
+                <span className="text-slate-600 text-sm">SunSpec Model</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Folder className="w-5 h-5 text-amber-600" />
+                <span className="text-slate-600 text-sm">Group</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <File className="w-5 h-5 text-green-600" />
+                <span className="text-slate-600 text-sm">Point</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Model Information */}
+          <div>
+            <h3 className="text-sm font-medium text-slate-700 mb-3">Model Information</h3>
+            <div className="space-y-2 text-sm">
+              <div>
+                <span className="font-medium text-slate-600">ID:</span>
+                <span className="ml-2 text-slate-800">{model.id}</span>
+              </div>
+              {model.label && (
+                <div>
+                  <span className="font-medium text-slate-600">Label:</span>
+                  <span className="ml-2 text-slate-800">{model.label}</span>
+                </div>
+              )}
+              {model.desc && (
+                <div>
+                  <span className="font-medium text-slate-600">Description:</span>
+                  <p className="mt-1 text-slate-800 leading-relaxed">{model.desc}</p>
+                </div>
+              )}
+              {model.group.desc && model.group.desc !== model.desc && (
+                <div>
+                  <span className="font-medium text-slate-600">Group Description:</span>
+                  <p className="mt-1 text-slate-800 leading-relaxed">{model.group.desc}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Navigation Tips */}
+          <div className="bg-blue-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-blue-800 mb-2">Navigation Tips</h3>
+            <ul className="text-xs text-blue-700 space-y-1">
+              <li>• Click on groups to expand/collapse them</li>
+              <li>• Use the search box to filter points and groups</li>
+              <li>• Point details show below each point name</li>
+              <li>• Hierarchy is shown with indentation and connecting lines</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
