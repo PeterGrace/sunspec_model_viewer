@@ -127,7 +127,7 @@ export const TreeView: React.FC<TreeViewProps> = ({ model }) => {
       <div key={node.id} className="select-none">
         <div
           className={`
-            flex items-center p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors
+            flex items-center p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors border-b border-slate-100 last:border-b-0
             ${node.level > 0 ? `ml-${Math.min(node.level * 4, 16)}` : ''}
           `}
           onClick={() => hasChildren && toggleNode(node.id)}
@@ -171,7 +171,7 @@ export const TreeView: React.FC<TreeViewProps> = ({ model }) => {
         </div>
 
         {hasChildren && isExpanded && (
-          <div className="transition-all duration-200">
+          <div className="transition-all duration-200 border-l border-slate-200 ml-2" style={{ marginLeft: `${(node.level + 1) * 20 + 2}px` }}>
             {node.children.map(child => renderNode(child))}
           </div>
         )}
