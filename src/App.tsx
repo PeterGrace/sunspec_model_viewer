@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ModelList } from './components/ModelList';
 import { TreeView } from './components/TreeView';
-import { ModelSummary } from './components/ModelSummary';
 import { SunSpecModel, ModelInfo } from './types';
 import { GitHubService } from './services/githubService';
 import { FileText, RotateCcw } from 'lucide-react';
@@ -71,9 +70,6 @@ function App() {
                 Back to Model List
               </button>
             </div>
-
-            {/* Model Summary */}
-            <ModelSummary model={model} />
 
             {/* Tree View */}
             <TreeView model={model} />
